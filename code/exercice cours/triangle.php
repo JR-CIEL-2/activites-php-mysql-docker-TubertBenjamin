@@ -4,4 +4,6 @@ function triangle($n) {
         echo str_repeat('*', $i) . "\n";
     }
 }
+
+$n = isset($_GET['n']) ? (int)$_GET['n'] : 5;
 ?>
