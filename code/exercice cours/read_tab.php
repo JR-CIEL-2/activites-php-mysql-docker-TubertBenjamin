@@ -1,7 +1,12 @@
 <?php
-include 'tri_selection.php';
+function afficher_tableau_valeur(array $t): void {
 
-function read_tab(tri_selection(array $t)) : void {
-    echo "Tableau tri selection par valeur ".$t."\n"; 
+    echo "Tableau trié (passage par valeur) : \n";
+    print_r($t); 
+}
+
+function afficher_tableau_reference(array &$t): void {
+    echo "Tableau trié (passage par référence) : \n";
+    print_r($t); 
 }
 ?>
