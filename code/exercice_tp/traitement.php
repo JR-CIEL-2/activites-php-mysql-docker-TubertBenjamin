@@ -1,25 +1,43 @@
 <?php
-$name = $prenom = $email = $password = $message = $major = "";
-
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $name = test_input($_POST["name"] ?? "");
-    $prenom = test_input($_POST["prénom"] ?? "");
-    $email = test_input($_POST["email"] ?? "");
-    $message = test_input($_POST["message"] ?? "");
-    $major = isset($_POST["major"]) ? "Oui" : "Non";
+    $nom = isset($_POST['name']) ? trim($_POST['name']) : '';  
+    $prenom = isset($_POST['prenom']) ? trim($_POST['prenom']) : ''; 
+    $email = isset($_POST['email']) ? trim($_POST['email']) : '';  
+    $mpd = isset($_POST['password']) ? trim($_POST['password']) : '';  
+    $message = isset($_POST['message']) ? trim($_POST['message']) : '';  
 
-    echo "<h2>Votre saisie :</h2>";
-    echo "Nom : $name<br>";
-    echo "Prénom : $prenom<br>";
-    echo "Email : $email<br>";
-    echo "Message : $message<br>";
-    echo "Majeur : $major<br>";
-}
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        echo "Email incorrect !"; 
+        exit;
+    }
+    $dataFile = 'data.json';
+    foreach ($data as $user) {
+        if ($user['email'] === $email) {
+            echo json_encode(["status" => "error", "message" => "Un compte est déjà enregistré avec cet email."]);
+            exit;
+        }
+    }
+    $newUser = [
+        'nom' => $nom, 
+        'prénom' => $prenom, 
+        'email' => $email, 
+        'password' => $pwd, 
+        'message' => $message
+    ];
 
-function test_input($data) {
-    $data = trim($data);
-    $data = stripslashes($data);
-    $data = htmlspecialchars($data);
-    return $data;
+    $data[] = $newUser;
+
+
+    if (file_put_contents($dataFile, json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE))) {
+        echo json_encode(["status" => "success", "message" => "Utilisateur cree correctement !"]);
+    } 
+
+    echo "Bienvenue :";
+    echo "<p>Monsieur :".htmlspecialchars($nom).htmlspecialchars($prenom)."</p>";  
+    echo "<p>Email :".htmlspecialchars($email)."</p>";
+    echo "<p>Message :". htmlspecialchars($message)."</p>";
+} else {
+ 
+    echo "Veuillez soumettre le formulaire correctement. Les champs n'ont pas été complété correctement.";
 }
 ?>
